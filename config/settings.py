@@ -1,4 +1,6 @@
 import os
+
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -20,6 +22,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_yasg',
+    'django_celery_beat',
+    'corsheaders',
     'habits',
     'users',
 ]
@@ -52,7 +59,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 # Database
 DATABASES = {
@@ -90,49 +96,64 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+# STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media files
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Воспринимай мою модель User за свою для авторизации пользователя
 # AUTH_USER_MODEL = 'YourAppName.YourClassName'
-# AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "users.User"
 
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
+# Filters и Настройки JWT-токенов
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES":
+        (
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+        ),
+    "DEFAULT_PAGINATION_CLASS":
+        "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 5,
+}
 
-#Подключение почты Яндекс
+# Настройки срока действия токенов
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=200),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+# CELERY
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# REDIS
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('REDIS_RESULT_BACKEND')
+CELERY_CACHE_BACKEND = os.getenv('CELERY_CACHE_BACKEND')
+CELERY_BEAT_SCHEDULE = {
+    "send_message_to_user": {
+        "task": "habits.tasks.send_message_to_user",
+        "schedule": timedelta(days=1),
+    }
+}
+
+# Подключение почты Яндекс
 # Адрес почтового сервера — smtp.yandex.ru.
 # Защита соединения — SSL.
 # Порт — 465. Если почтовый клиент начинает соединение без шифрования — 587.
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'iVasya2033@yandex.ru'
-EMAIL_HOST_PASSWORD = 'znwlirhdwkdnopwb'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = os.getenv("EMAIL_HOST")
-# EMAIL_PORT = os.getenv("EMAIL_PORT")
-# EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", False) == "True"
-# EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == "True"
-# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-# DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", False) == "True"
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == "True"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
-#REDIS
-# CACHE_ENABLE = os.getenv("CACHE_ENABLE", False) == "True"
-#
-# if CACHE_ENABLE:
-#     CACHES = {
-#         "default": {
-#             "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#             "LOCATION": os.getenv("LOCATION"),
-#         }
-#     }
+# Подключение TG
+TELEGRAM_BOT_ID = os.getenv('TELEGRAM_BOT_ID')

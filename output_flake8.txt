@@ -1,0 +1,1 @@
+[1m.\habits\validators.py[m[36m:[m32[36m:[m101[36m:[m [1m[31mE501[m line too long (103 > 100 characters)

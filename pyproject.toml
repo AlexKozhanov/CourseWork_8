@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "coursework-8"
+version = "0.1.0"
+description = ""
+authors = ["Admin <alexander_kozhanov@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.2.4"
+python-dotenv = "^1.1.1"
+psycopg2 = "^2.9.10"
+psycopg2-binary = "^2.9.10"
+pillow = "^11.3.0"
+ipython = "^9.4.0"
+redis = "^6.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

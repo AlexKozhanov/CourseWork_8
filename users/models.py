@@ -24,8 +24,10 @@ class User(AbstractUser):
         verbose_name="Фамилия",
         **NULLABLE
     )
-    tg_chat_id = models.PositiveIntegerField(
-        verbose_name="ID чата в Telegram",
+    tg_chat_id = models.CharField(
+        max_length=50,
+        verbose_name="telegram chat id",
+        help_text="Enter your telegram chat id (NOT your username that starts with @)",
         **NULLABLE
     )
 

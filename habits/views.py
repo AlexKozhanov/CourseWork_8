@@ -57,10 +57,10 @@ class HabitsViewSet(viewsets.ModelViewSet):
         """
         Добавление владельца к Habit при создании и определенье поля send_indicator.
         """
-        # habit = serializer.save(owner=self.request.user)
-        # habit.send_indicator = habit.periodicity
-        # habit.save(update_fields=["send_indicator"])
-        pass
+        habit = serializer.save(owner=self.request.user)
+        habit.send_indicator = habit.periodicity
+        habit.save(update_fields=["send_indicator"])
+        # pass
         # habit = serializer.save()
         # habit.owner = self.request.user
         # habit.save()

@@ -138,7 +138,8 @@ CELERY_CACHE_BACKEND = os.getenv('CELERY_CACHE_BACKEND')
 CELERY_BEAT_SCHEDULE = {
     "send_message_to_user": {
         "task": "habits.tasks.send_message_to_user",
-        "schedule": timedelta(days=1),
+        # "schedule": timedelta(days=1),
+        "schedule": timedelta(hours=1),
     }
 }
 

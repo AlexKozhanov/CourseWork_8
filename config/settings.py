@@ -1,4 +1,5 @@
 import os
+import sys
 
 from datetime import timedelta
 from pathlib import Path
@@ -11,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True if os.getenv('DEBUG') == "True" else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -96,7 +97,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    "/usr/local/lib/python3.10/site-packages/rest_framework/static",
+]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Media files
 # MEDIA_URL = "/media/"
@@ -157,3 +162,11 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 # Подключение TG
 TELEGRAM_BOT_ID = os.getenv('TELEGRAM_BOT_ID')
+
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db_sqlite3',
+        }
+    }

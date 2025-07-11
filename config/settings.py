@@ -97,11 +97,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    "/usr/local/lib/python3.10/site-packages/rest_framework/static",
-]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Media files
 # MEDIA_URL = "/media/"

@@ -7,7 +7,7 @@ from habits.models import Habit
 from habits.paginations import ViewUserHabitPagination
 from habits.serializers import HabitSerializer
 from users.permissions import IsOwner
-
+from habits.services import create_task
 
 @method_decorator(
     name="list",
@@ -49,7 +49,6 @@ class HabitsViewSet(viewsets.ModelViewSet):
     """
     Представление для модели Habit.
     """
-
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
 

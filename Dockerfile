@@ -11,13 +11,9 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Копируем файл зависимостей в контейнер
-COPY poetry.lock pyproject.toml ./
-
+COPY requirements.txt .
 # Устанавливаем зависимости Python
-RUN python -m pip install --no-cache-dir poetry \
-    && poetry config virtualenvs.create false \
-    && poetry install --without dev,test --no-interaction --no-ansi \
-    && rm -rf $(poetry config cache-dir)/{cache,artifacts}
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем исходный код приложения в контейнер
 COPY . .

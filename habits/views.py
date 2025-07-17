@@ -77,7 +77,7 @@ class UserHabitViewSet(APIView):
     """
     @swagger_auto_schema(responses={200: HabitSerializer()})
     def get(self, request):
-        habits = Habit.objects.filter(owner=request.user)
+        habits = Habit.objects.filter(owner=request.user.id)
         paginator = ViewUserHabitPagination()
         result = paginator.paginate_queryset(habits, request)
         serializer = HabitSerializer(result, many=True)

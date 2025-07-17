@@ -2,6 +2,7 @@ import os
 
 from datetime import timedelta
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # override=True - явно перезаписывай переменные окружения, если они уже объявлены
@@ -24,9 +25,11 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
     'drf_yasg',
     'django_celery_beat',
     'corsheaders',
+
     'habits',
     'users',
 ]
@@ -137,9 +140,15 @@ CELERY_RESULT_BACKEND = os.getenv('REDIS_RESULT_BACKEND')
 CELERY_CACHE_BACKEND = os.getenv('CELERY_CACHE_BACKEND')
 CELERY_BEAT_SCHEDULE = {
     "send_message_to_user": {
-        "task": "habits.tasks.send_message_to_user",
+        "task": "habits.tasks.send_message_to_user",  # Путь к задаче
         # "schedule": timedelta(days=1),
-        "schedule": timedelta(hours=1),
+        "schedule": timedelta(hours=1),  # Расписание выполнения задачи (например, каждые 10 минут)
+    },
+    "send_reminder": {
+        "task": "habits.tasks.send_reminder",  # Путь к задаче
+        "schedule": timedelta(
+            seconds=60
+        ),  # Расписание выполнения задачи (например, каждые 10 минут)
     }
 }
 
@@ -157,4 +166,5 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 # Подключение TG
+TELEGRAM_URL = "https://api.telegram.org/bot"
 TELEGRAM_BOT_ID = os.getenv('TELEGRAM_BOT_ID')

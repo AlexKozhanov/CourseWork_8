@@ -1,9 +1,10 @@
 import os
 
 from datetime import timedelta
+from celery.schedules import crontab
 from pathlib import Path
-
 from dotenv import load_dotenv
+
 
 # override=True - явно перезаписывай переменные окружения, если они уже объявлены
 load_dotenv(override=True)
@@ -93,7 +94,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
@@ -125,7 +126,7 @@ REST_FRAMEWORK = {
 
 # Настройки срока действия токенов
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=200),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
@@ -141,15 +142,18 @@ CELERY_CACHE_BACKEND = os.getenv('CELERY_CACHE_BACKEND')
 CELERY_BEAT_SCHEDULE = {
     "send_message_to_user": {
         "task": "habits.tasks.send_message_to_user",  # Путь к задаче
-        # "schedule": timedelta(days=1),
-        "schedule": timedelta(hours=1),  # Расписание выполнения задачи (например, каждые 10 минут)
+        "schedule": timedelta(hours=12),  # Расписание выполнения задачи
+        # "schedule": datetime.timedelta(days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0)
     },
     "send_reminder": {
         "task": "habits.tasks.send_reminder",  # Путь к задаче
-        "schedule": timedelta(
-            seconds=60
-        ),  # Расписание выполнения задачи (например, каждые 10 минут)
-    }
+        "schedule": timedelta(seconds=40),  # Расписание выполнения задачи
+    },
+    "send_work": {
+        "task": "habits.tasks.send_work",  # Путь к задаче
+        # 'schedule': crontab(),  # Раз в минуту
+        'schedule': crontab(hour=8, minute=0),  # Ежедневно в 8 утра
+    },
 }
 
 # Подключение почты Яндекс
@@ -168,3 +172,4 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 # Подключение TG
 TELEGRAM_URL = "https://api.telegram.org/bot"
 TELEGRAM_BOT_ID = os.getenv('TELEGRAM_BOT_ID')
+CHAT_ID = os.getenv('CHAT_ID')

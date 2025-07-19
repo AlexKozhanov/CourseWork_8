@@ -43,20 +43,21 @@ class Habit(models.Model):
         **NULLABLE,
         help_text="время, которое предположительно потратит пользователь на выполнение привычки (по умолчанию 120сек)",)
     sign_of_a_pleasant_habit = models.BooleanField(
-        verbose_name="Признак полезной привычки",
+        verbose_name="Признак приятной привычки",
         default=False,
         **NULLABLE,
-        help_text="привычка, которую можно привязать к выполнению полезной привычки.")
+        help_text="True - приятная привычка; False - полезная привычка (по умолчанию False)")
     related_habit = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
         verbose_name="Связанная приятная привычка",
         **NULLABLE,
-        related_name="related_habits")
+        related_name="related_habits",
+        help_text="привычка, которую выполняем после полезной привычки (не может быть полезной и иметь вознаграждение)")
     reward = models.CharField(
         verbose_name="Вознаграждение",
         **NULLABLE,
-        help_text="чем пользователь должен себя вознаградить после выполнения")
+        help_text="чем пользователь должен себя вознаградить после выполнения (какой-то объект)")
 
     STATUS_PUBLISHED = [
         ("Опубликован", "Опубликован"),
@@ -65,14 +66,9 @@ class Habit(models.Model):
     published = models.CharField(
         max_length=50,
         choices=STATUS_PUBLISHED,
-        default="Опубликован",
+        default="Не опубликован",
         **NULLABLE,
         verbose_name="Статус опубликования привычки (по умолчанию Не опубликован)",
-    )
-    send_indicator = models.PositiveSmallIntegerField(
-        editable=False,
-        verbose_name="Индикатор отправки",
-        **NULLABLE
     )
 
     class Meta:

@@ -3,13 +3,14 @@ from django.core.management import BaseCommand
 from habits.models import Habit
 from users.models import User
 
+# Указываем московское время
 Time = [
-    "17:00:00",
-    "17:01:00",
-    "17:02:00",
-    "17:03:00",
-    "17:04:00",
-    "17:05:00"]
+    "13:01:00",
+    "13:12:00",
+    "13:13:00",
+    "13:14:00",
+    "13:15:00"]
+
 
 class Command(BaseCommand):
     """
@@ -19,61 +20,63 @@ class Command(BaseCommand):
         user = User.objects.get(id=2)
         habit1 = Habit.objects.get_or_create(
             owner=user,
-            habit="перерыв на 5-минут",
+            habit="Смотреть YouTube Shorts",
+            place_of_execution="комнате",
+            time_execution=Time[3],
+            periodicity=1,
+            time_to_complete="00:00:30",
+            sign_of_a_pleasant_habit=True,  # True - приятная привычка; False - полезная привычка
+            # related_habit или reward
+            # related_habit="",
+            # reward="Шоколадка"
+        )
+        habit1 = Habit.objects.get(habit="Смотреть YouTube Shorts")
+        habit2 = Habit.objects.get_or_create(
+            owner=user,
+            habit="Смотреть Pinterest",
+            place_of_execution="спальне",
+            time_execution=Time[4],
+            periodicity=1,
+            time_to_complete="00:01:20",
+            sign_of_a_pleasant_habit=True,  # True - приятная привычка; False - полезная привычка
+            # related_habit или reward
+            # related_habit="",
+            # reward="шоколадка"
+        )
+        habit2 = Habit.objects.get(habit="Смотреть Pinterest")
+        habit3 = Habit.objects.get_or_create(
+            owner=user,
+            habit="Делать перерыв на 30-секунд",
             place_of_execution="комнате",
             time_execution=Time[0],
             periodicity=1,
-            time_to_complete="00:01:00",
-            reward= "шоколадка",
-            published= "Опубликован",
+            time_to_complete="00:00:30",
+            sign_of_a_pleasant_habit=False,  # True - приятная привычка; False - полезная привычка
+            # related_habit или reward
+            # related_habit="",
+            reward="Шоколадка"
         )
-        habit2 = Habit.objects.get_or_create(
+        habit4 = Habit.objects.get_or_create(
             owner=user,
-            habit="Крутить головой",
-            place_of_execution="комнате",
+            habit="Проходить урок DuoLingo",
+            place_of_execution="спальне",
             time_execution=Time[1],
             periodicity=1,
-            time_to_complete="00:01:00",
-            reward="шоколадка",
-            published="Опубликован",
+            time_to_complete="00:01:20",
+            sign_of_a_pleasant_habit=False,  # True - приятная привычка; False - полезная привычка
+            # related_habit или reward
+            related_habit=habit1,
+            # reward="шоколадка"
         )
-        habit3 = Habit.objects.get_or_create(
+        habit5 = Habit.objects.get_or_create(
             owner=user,
-            habit="Крутить руками",
+            habit="Читать статью",
             place_of_execution="комнате",
             time_execution=Time[2],
             periodicity=1,
             time_to_complete="00:01:00",
-            reward="шоколадка",
-            published="Опубликован",
-        )
-        habit4 = Habit.objects.get_or_create(
-            owner=user,
-            habit="Крутить ногами",
-            place_of_execution="комнате",
-            time_execution=Time[3],
-            periodicity=1,
-            time_to_complete="00:01:00",
-            reward="шоколадка",
-            published="Опубликован",
-        )
-        habit5 = Habit.objects.get_or_create(
-            owner=user,
-            habit="Крутить телом",
-            place_of_execution="комнате",
-            time_execution=Time[4],
-            periodicity=1,
-            time_to_complete="00:01:00",
-            reward="шоколадка",
-            published="Опубликован",
-        )
-        habit6 = Habit.objects.get_or_create(
-            owner=user,
-            habit="Продолжать работу",
-            place_of_execution="где-то",
-            time_execution=Time[5],
-            periodicity=1,
-            time_to_complete="00:01:00",
-            reward="шоколадка",
-            published="Опубликован",
+            sign_of_a_pleasant_habit=False,  # True - приятная привычка; False - полезная привычка
+            # related_habit или reward
+            related_habit=habit2,
+            # reward="шоколадка"
         )

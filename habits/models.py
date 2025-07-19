@@ -36,12 +36,12 @@ class Habit(models.Model):
         verbose_name="Периодичность",
         default=1,
         **NULLABLE,
-        help_text="Укажите кол-во дней, за которые необходимо выполнить привычку (по умолчанию раз в день)",)
+        help_text="Укажите кол-во дней, за которые необходимо выполнить привычку (по умолчанию раз в день)")
     time_to_complete = models.DurationField(
         default=timedelta(seconds=120),
         verbose_name="Время на действие",
         **NULLABLE,
-        help_text="время, которое предположительно потратит пользователь на выполнение привычки (по умолчанию 120сек)",)
+        help_text="время, которое предположительно потратит пользователь на выполнение (по умолчанию 120сек)")
     sign_of_a_pleasant_habit = models.BooleanField(
         verbose_name="Признак приятной привычки",
         default=False,
@@ -53,7 +53,7 @@ class Habit(models.Model):
         verbose_name="Связанная приятная привычка",
         **NULLABLE,
         related_name="related_habits",
-        help_text="привычка, которую выполняем после полезной привычки (не может быть полезной и иметь вознаграждение)")
+        help_text="привычка, которую выполняем после полезной (не может быть полезной и иметь вознаграждение)")
     reward = models.CharField(
         verbose_name="Вознаграждение",
         **NULLABLE,

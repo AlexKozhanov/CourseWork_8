@@ -1,3 +1,4 @@
+# flake8: noqa
 from django.core.management import BaseCommand
 
 from habits.models import Habit

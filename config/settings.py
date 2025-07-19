@@ -143,7 +143,6 @@ CELERY_BEAT_SCHEDULE = {
     "send_message_to_user": {
         "task": "habits.tasks.send_message_to_user",  # Путь к задаче
         "schedule": timedelta(hours=12),  # Расписание выполнения задачи
-        # "schedule": datetime.timedelta(days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0)
     },
     "send_reminder": {
         "task": "habits.tasks.send_reminder",  # Путь к задаче

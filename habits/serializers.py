@@ -2,9 +2,7 @@ from rest_framework import serializers
 from habits.models import Habit
 from habits.validators import (
     FieldFillingValidator,
-    RelatedHabitValidator,
-    execution_time_validator
-)
+    RelatedHabitValidator)
 
 
 class HabitSerializer(serializers.ModelSerializer):
@@ -20,7 +18,6 @@ class HabitSerializer(serializers.ModelSerializer):
             FieldFillingValidator(
                 "reward",
                 "related_habit",
-                "sign_of_a_pleasant_habit"
-            ),
+                "sign_of_a_pleasant_habit"),
             RelatedHabitValidator("related_habit"),
         ]

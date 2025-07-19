@@ -1,4 +1,3 @@
-import os
 from datetime import datetime, timedelta
 from celery import shared_task
 
@@ -6,6 +5,7 @@ from users.models import User
 from habits.models import Habit
 from habits.services import send_telegram_message
 from config.settings import CHAT_ID
+
 
 @shared_task
 def send_message_to_user():
@@ -20,9 +20,10 @@ def send_message_to_user():
                       f"в {habit.place_of_execution}"
             send_telegram_message(
                 chat_id=habit.owner.tg_chat_id,
-                message=message,)
+                message=message, )
             print("Сообщение отправлено send_message_to_user")
-        else: print("Я ничего не нашел send_message_to_user")
+        else:
+            print("Я ничего не нашел send_message_to_user")
 
 
 @shared_task
@@ -43,14 +44,13 @@ def send_reminder():
         if chat_id:
             send_telegram_message(chat_id, message)
             print("Сообщение отправлено send_reminder")
-        else: print("Я ничего не нашел send_reminder")
+        else:
+            print("Я ничего не нашел send_reminder")
 
 
 @shared_task
 def send_work():
     chat_id = CHAT_ID
-    # chat_id = 5059260529
     message = "Я работаю"
     send_telegram_message(chat_id, message)
     print("Сообщение отправлено send_work")
-

@@ -1,12 +1,15 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import CreateAPIView
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import (
+    UserSerializer,
+    MyTokenObtainPairSerializer)
 
 
 @method_decorator(
@@ -63,5 +66,13 @@ class UserCreateApiView(CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save(is_active=True)
-        user.set_password(user.password)
+        # user.set_password(user.password)
+        user.set_password(serializer.validated_data.get("password"))
         user.save()
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    """
+    Токен
+    """
+    serializer_class = MyTokenObtainPairSerializer

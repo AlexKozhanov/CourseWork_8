@@ -1,8 +1,10 @@
 import os
 
 from datetime import timedelta
+from celery.schedules import crontab
 from pathlib import Path
 from dotenv import load_dotenv
+
 
 # override=True - явно перезаписывай переменные окружения, если они уже объявлены
 load_dotenv(override=True)
@@ -24,9 +26,11 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
     'drf_yasg',
     'django_celery_beat',
     'corsheaders',
+
     'habits',
     'users',
 ]
@@ -34,6 +38,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -90,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_TZ = True
 
@@ -111,8 +116,7 @@ AUTH_USER_MODEL = "users.User"
 
 # Filters и Настройки JWT-токенов
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES":
-        (
+    "DEFAULT_AUTHENTICATION_CLASSES": (
             "rest_framework_simplejwt.authentication.JWTAuthentication",
         ),
     "DEFAULT_PAGINATION_CLASS":
@@ -122,24 +126,33 @@ REST_FRAMEWORK = {
 
 # Настройки срока действия токенов
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=200),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
-# CELERY
+# CELERY & REDIS
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
-# REDIS
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('REDIS_RESULT_BACKEND')
 CELERY_CACHE_BACKEND = os.getenv('CELERY_CACHE_BACKEND')
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BEAT_SCHEDULE = {
     "send_message_to_user": {
-        "task": "habits.tasks.send_message_to_user",
-        "schedule": timedelta(days=1),
-    }
+        "task": "habits.tasks.send_message_to_user",  # Путь к задаче
+        "schedule": timedelta(hours=12),  # Расписание выполнения задачи
+    },
+    "send_reminder": {
+        "task": "habits.tasks.send_reminder",  # Путь к задаче
+        "schedule": timedelta(seconds=40),  # Расписание выполнения задачи
+    },
+    "send_work": {
+        "task": "habits.tasks.send_work",  # Путь к задаче
+        # 'schedule': crontab(),  # Раз в минуту
+        'schedule': crontab(hour=8, minute=0),  # Ежедневно в 8 утра
+    },
 }
 
 # Подключение почты Яндекс
@@ -156,4 +169,21 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 # Подключение TG
+TELEGRAM_URL = "https://api.telegram.org/bot"
 TELEGRAM_BOT_ID = os.getenv('TELEGRAM_BOT_ID')
+CHAT_ID = os.getenv('CHAT_ID')
+
+# CORS
+CORS_ALLOWED_ORIGINS = [
+    "https://read-only.example.com",
+    "https://read-and-write.example.com",
+    'http://localhost:8000',
+    # '*',  # Для любого домена
+    ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://read-and-write.example.com",
+    'http://localhost:8000',
+]
+
+CORS_ALLOW_ALL_ORIGINS = False

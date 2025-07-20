@@ -57,10 +57,10 @@ class HabitsViewSet(viewsets.ModelViewSet):
         """
         Добавление владельца к Habit при создании и определенье поля send_indicator.
         """
-        # habit = serializer.save(owner=self.request.user)
-        # habit.send_indicator = habit.periodicity
-        # habit.save(update_fields=["send_indicator"])
-        pass
+        habit = serializer.save(owner=self.request.user)
+        habit.send_indicator = habit.periodicity
+        habit.save(update_fields=["send_indicator"])
+        # pass
         # habit = serializer.save()
         # habit.owner = self.request.user
         # habit.save()
@@ -77,7 +77,7 @@ class UserHabitViewSet(APIView):
     """
     @swagger_auto_schema(responses={200: HabitSerializer()})
     def get(self, request):
-        habits = Habit.objects.filter(owner=request.user)
+        habits = Habit.objects.filter(owner=request.user.id)
         paginator = ViewUserHabitPagination()
         result = paginator.paginate_queryset(habits, request)
         serializer = HabitSerializer(result, many=True)

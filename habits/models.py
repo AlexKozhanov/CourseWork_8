@@ -1,7 +1,7 @@
 from datetime import timedelta
 from django.core.validators import MaxValueValidator
 from django.db import models
-from users.models import User
+from config.settings import AUTH_USER_MODEL
 
 NULLABLE = {"null": True, "blank": True}
 
@@ -10,42 +10,54 @@ class Habit(models.Model):
     """
     Модель привычки.
     """
+    owner = models.ForeignKey(
+        AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Создатель привычки",
+        related_name="users_habits",
+        **NULLABLE)
     habit = models.CharField(
         max_length=255,
         verbose_name="Привычка",
-    )
+        help_text="Напиши что делаешь")
     place_of_execution = models.CharField(
-        max_length=255, verbose_name="Место где нужно выполнять привычку",
-        **NULLABLE
-    )
+        max_length=255,
+        verbose_name="Место где нужно выполнять привычку",
+        **NULLABLE,
+        help_text="Напиши место")
     time_execution = models.TimeField(
-        verbose_name="Время когда выполняется привычка",
-        **NULLABLE
-    )
+        auto_now=False,
+        auto_now_add=False,
+        verbose_name="Время",
+        **NULLABLE,
+        help_text="Время для выполнения привычки",)
     periodicity = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(7)],
-        verbose_name="Периодичность привычки",
-        default=1
-    )
+        verbose_name="Периодичность",
+        default=1,
+        **NULLABLE,
+        help_text="Укажите кол-во дней, за которые необходимо выполнить привычку (по умолчанию раз в день)")
     time_to_complete = models.DurationField(
         default=timedelta(seconds=120),
-        verbose_name="Продолжительность выполнения привычки по времени",
-    )
+        verbose_name="Время на действие",
+        **NULLABLE,
+        help_text="время, которое предположительно потратит пользователь на выполнение (по умолчанию 120сек)")
     sign_of_a_pleasant_habit = models.BooleanField(
-        verbose_name="Показатель приятной привычки",
-        default=False
-    )
+        verbose_name="Признак приятной привычки",
+        default=False,
+        **NULLABLE,
+        help_text="True - приятная привычка; False - полезная привычка (по умолчанию False)")
     related_habit = models.ForeignKey(
         "self",
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         verbose_name="Связанная приятная привычка",
         **NULLABLE,
-        related_name="related_habits"
-    )
+        related_name="related_habits",
+        help_text="привычка, которую выполняем после полезной (не может быть полезной и иметь вознаграждение)")
     reward = models.CharField(
-        verbose_name="Вознаграждение за привычку",
-        **NULLABLE
-    )
+        verbose_name="Вознаграждение",
+        **NULLABLE,
+        help_text="чем пользователь должен себя вознаградить после выполнения (какой-то объект)")
 
     STATUS_PUBLISHED = [
         ("Опубликован", "Опубликован"),
@@ -55,19 +67,8 @@ class Habit(models.Model):
         max_length=50,
         choices=STATUS_PUBLISHED,
         default="Не опубликован",
-        verbose_name="Статус опубликования привычки",
-    )
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name="Создатель привычки",
-        related_name="users_habits",
-        **NULLABLE
-    )
-    send_indicator = models.PositiveSmallIntegerField(
-        editable=False,
-        verbose_name="Индикатор отправки",
-        **NULLABLE
+        **NULLABLE,
+        verbose_name="Статус опубликования привычки (по умолчанию Не опубликован)",
     )
 
     class Meta:

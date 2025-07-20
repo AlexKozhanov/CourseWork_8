@@ -1,17 +1,15 @@
 import requests
+from config.settings import TELEGRAM_URL, TELEGRAM_BOT_ID
 
-from config.settings import TELEGRAM_BOT_ID
 
-
-def send_telegram_message(message, chat_id):
+def send_telegram_message(chat_id, message):
     """
-    Отправка сообщения в TG.
+    Отправь сообщение в TG.
+    :param chat_id: id .
+    :param message: текст сообщения.
     """
     params = {
         "text": message,
         "chat_id": chat_id
     }
-    requests.get(
-        f"https://api.telegram.org/bot{TELEGRAM_BOT_ID}/sendMessage",
-        params=params
-    )
+    requests.get(f"{TELEGRAM_URL}{TELEGRAM_BOT_ID}/sendMessage", params=params)

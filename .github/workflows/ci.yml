@@ -108,9 +108,9 @@ jobs:
           ssh -T -o StrictHostKeyChecking=no \
               -o UserKnownHostsFile=/dev/null \
               ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          cd /var/www/HomeWork_30.1/
-          sudo git checkout feature/Docker_init
-          sudo git pull
+          cd ~/CourseWork_8
+          git checkout develop_for_35
+          git pull
           if [ -d "static" ]; then
             echo "Static folder exists."
             else

@@ -18,11 +18,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копируем исходный код приложения в контейнер
 COPY . .
 
-# Определяем переменные окружения
-ENV SECRET_KEY="django-insecure-=_hu2+5ccw!3cddtq6e4aqmc@624gf0$w5jiyj5qg!d-cp)xa6"
-ENV CELERY_BROKER_URL="redis://localhost:6379/0"
-ENV CELERY_BACKEND="redis://localhost:6379/0"
-
 # Создаем директорию для медиафайлов
 RUN mkdir -p /app/media
 

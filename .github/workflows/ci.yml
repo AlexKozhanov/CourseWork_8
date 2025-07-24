@@ -21,7 +21,7 @@ jobs:
 
       - name: Run flake8
         run: flake8 --config .flake8 .
-        
+
 
   test:
     needs: lint
@@ -70,6 +70,7 @@ jobs:
 
       - name: Run tests
         run: python manage.py test
+
 
   build:
     needs: test

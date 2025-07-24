@@ -1,4 +1,5 @@
 import os
+import sys
 
 from datetime import timedelta
 from pathlib import Path
@@ -11,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True if os.getenv('DEBUG') == "True" else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -96,7 +97,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media files
 # MEDIA_URL = "/media/"
@@ -135,12 +135,13 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('REDIS_RESULT_BACKEND')
 CELERY_CACHE_BACKEND = os.getenv('CELERY_CACHE_BACKEND')
-CELERY_BEAT_SCHEDULE = {
-    "send_message_to_user": {
-        "task": "habits.tasks.send_message_to_user",
-        "schedule": timedelta(days=1),
-    }
-}
+# CELERY_BEAT_SCHEDULE = {
+#     "send_message_to_user": {
+#         "task": "habits.tasks.send_message_to_user",
+#         "schedule": timedelta(days=1),
+#     }
+# }
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 # Подключение почты Яндекс
 # Адрес почтового сервера — smtp.yandex.ru.
@@ -157,3 +158,11 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 # Подключение TG
 TELEGRAM_BOT_ID = os.getenv('TELEGRAM_BOT_ID')
+
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db_sqlite3',
+        }
+    }

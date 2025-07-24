@@ -49,7 +49,6 @@ class HabitsViewSet(viewsets.ModelViewSet):
     """
     Представление для модели Habit.
     """
-
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
 
